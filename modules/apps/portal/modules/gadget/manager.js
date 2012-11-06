@@ -63,7 +63,7 @@ var getGadgetURLs = function(path) {
 
 	if (gadgetsMeta != null) {
 
-		//if multiple gadgets urls are requested
+		//if multiple gadgets are requested
 		if (typeof(gadgetsMeta.getChildren) != 'undefined') { 
 
 			var gadgeturls = [];
@@ -71,12 +71,14 @@ var getGadgetURLs = function(path) {
 			for (var i = 0; i < gadgetsMeta.getChildren().length; i++) {
 				var gadgetRegPath = gadgetsMeta.getChildren()[i];
 				var metaGadget = dataStore.get(gadgetRegPath);
+				//var gadget = parse(metaGadget.content);
+				//gadget.path = gadgetRegPath;
 				gadgeturls.push(metaGadget.getProperty("url"));
 			}
 
 			return gadgeturls;
 			
-		} else { // if a single gadget url is requested
+		} else { // if a single gadget is requested
 			var gadgeturl = metaGadget.getProperty("url");
 			return gadgeturl;
 		}

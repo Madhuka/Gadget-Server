@@ -1,11 +1,6 @@
-<div class="container">
-  <input class="span7" id="gadgetUrl"  type="text" placeholder="Type gadget url">
-  <button id="preloadAndAddGadget" class="btn btn-info" type="button">Preload and Add</button>
-				<div id="test"></div>
-<div class="gadgets" id="gadgets">
-	<div class="gridster row">
-		<ul class="span12">
-			{{#each gadgets}}
+<script id="myTemplate" type="text/template"> 
+
+
 			<!-- load row and column from the db, auto-adjust height according to iframe height-->
 			<li class="widget img-rounded span4" data-row="1" data-col="1" data-sizex="1" data-sizey="1">
 				<div style="height: 100%">
@@ -28,15 +23,13 @@
 						</ul>
 					</div>
 					<div class="widget-content">
-						{{{ this }}}
+						
 					</div>
 
 				</div>
 
 			</li>
-			{{/each}}
-		</ul>
-	</div>
+			
 
-</div>
+</script> 
 
