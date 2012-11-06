@@ -28,7 +28,6 @@ var getGadgets = function(path) {
 				var gadgetRegPath = gadgetsMeta.getChildren()[i];
 				var metaGadget = dataStore.get(gadgetRegPath);
 				var gadget = parse(metaGadget.content);
-				log.info("meta gadget url "+metaGadget.content.url);
 				gadget.path = gadgetRegPath;
 				gadgets.push(gadget);
 			}
