@@ -1,1 +1,0 @@
-CommonContainer.renderGadget('http://localhost:9763/portal/gadgets/soa-gadget/soa.xml', 1);

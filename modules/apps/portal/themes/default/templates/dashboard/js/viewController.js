@@ -1,28 +1,26 @@
 $(function() {
-	var urlBase = location.href.substr(0, location.href.indexOf('/madhukacommoncontainer/'));
 	$.ajax({
-		//http://10.100.3.27:9763/portal/apis/dashboard/listgadget/listgadget.jag?action=listgadgets&dashboardname=default&gadgetarea=main&username=admin
 		url : 'http://10.100.3.27:9763/portal/apis/dashboard/listgadget/listgadget.jag?action=listgadgets&dashboardname=default&gadgetarea=main&username=admin',
 		dataType : 'json',
 		success : function(data) {
-			$.each(data.collections, function(i, data) {
-				var optionVal = [];
-				$.each(data.apps, function(i, data) {
-					if(data.url.indexOf('http') < 0 && data.url.indexOf('/') == 0) {
-						optionVal.push(urlBase + data.url);
-					} else {
-						optionVal.push(data.url);
-					}
-				});
-				$('#gadgetCollection').append('<option value="' + optionVal.toString() + '">' + data.name + '</option>');
+			console.log("JAXXXXX" + data.gadgeturls[0]);
+			$.each(data.gadgeturls, function() {
+				console.log(this.toString());
+				window.buildGadgetTemplet();
+				window.buildGadget(this.toString(), curId);
+				curId++;
 			});
+		},
+		error : function(data) {
+
+			console.log("error");
 		}
 	});
 	var curId = 0;
 
 	//create a gadget with navigation tool bar header enabling gadget collapse, expand, remove, navigate to view actions.
 	window.buildGadget = function(gadgetURL, id) {
-		var elem = document.getElementById('gadget-body-' + id);
+		var elem = document.getElementById('gadget-content-'+ id);
 		var gadget = gadgetURL;
 		var container = new osapi.container.Container();
 		var site = container.newGadgetSite(elem);
@@ -31,36 +29,16 @@ $(function() {
 		};
 
 		container.preloadGadget(gadget, function(result) {
-			var xx=	'<li class="widget img-rounded span4" data-row="1" data-col="1" data-sizex="1" data-sizey="1">'
-				+'<div style="height: 100%">'
-					+'<div class="widget-header">'
-						+'<h2>'+result[gadget]['modulePrefs'].title+'</h2>'
-						+'<a class="show-options"><img src="./themes/default/img/icon-widget-three-dots.png"></a>'
-						+'<ul class="widget-controls">'
-							+'<li>'
-								+'<a href="#"><i class="icon-cog"></i></a>'
-							+'</li>'
-							+'<li>'
-								+'<a href="#"><i class="icon-minus"></i></a>'
-							+'</li>'
-							+'<li>'
-								+'<a href="#"><i class="icon-resize-full"></i></a>'
-							+'</li>'
-							+'<li>'
-								+'<a href="#"><i class="icon-remove"></i></a>'
-							+'</li>'
-						+'</ul>'
-					+'</div>'
-					+'<div class="widget-content">'					
-					+'</div>'
-				+'</div>'
-			+'</li>';
+			var xx = '<li class="widget img-rounded span4" data-row="1" data-col="1" data-sizex="1" data-sizey="1">' + '<div style="height: 100%">' + '<div class="widget-header">' + '<h2>' + result[gadget]['modulePrefs'].title + '</h2>' + '<a class="show-options"><img src="../themes/default/img/icon-widget-three-dots.png"></a>' + '<ul class="widget-controls">' + '<li>' + '<a href="#"><i class="icon-cog"></i></a>' + '</li>' + '<li>' + '<a href="#"><i class="icon-minus"></i></a>' + '</li>' + '<li>' + '<a href="#"><i class="icon-resize-full"></i></a>' + '</li>' + '<li>' + '<a href="#"><i class="icon-remove"></i></a>' + '</li>' + '</ul>' + '</div>' + '<div class="widget-content" id="widget-content-'+curId+'">' + '</div>' + '</div>' + '</li>';
 			if(!result[gadget].error) {
 				container.navigateGadget(site, gadget, {}, renderParams);
 				$('#gadget-header-' + id).append('<h5>' + result[gadget]['modulePrefs'].title + '</h5>');
-				var templatex = $('#myTemplate').html(); //	document.getElementById('gadget-header-'+id).innerHTML=;
-				$('#test').append(xx);
-				console.log("xxxxxxxxxxxxxxxxxxxxx"+xx);
+				var templatex = $('#myTemplate').html();
+				//	document.getElementById('gadget-header-'+id).innerHTML=;
+			//	$('#gridsterrow').append(xx);
+				$('#gadget-' + id).append(xx);
+				
+				console.log("xxxxxxxxxxxxxxxxxxxxx" + xx);
 				var obj = result[gadget]['userPrefs'];
 				var gadgetForm = Object.gadgetForm(obj, curId);
 				console.log(gadgetForm);
@@ -75,7 +53,7 @@ $(function() {
 		var gadgetdiv = document.createElement('div');
 		gadgetdiv.setAttribute('id', 'gadget-' + curId);
 		var gadgetHeaderdiv = document.createElement('div');
-		gadgetHeaderdiv.setAttribute('id', 'gadget-body-' + curId);
+		gadgetHeaderdiv.setAttribute('id', 'gadget-content-' + curId);
 		var gadgetBoadydiv = document.createElement('div');
 		gadgetBoadydiv.setAttribute('id', 'gadget-header-' + curId);
 		var elem = document.getElementById("gadgets");
@@ -84,19 +62,7 @@ $(function() {
 		gadgetdiv.appendChild(gadgetHeaderdiv);
 
 	};
-		window.gadgetTemplet = function(name) {
-		var gadgetdiv = document.createElement('div');
-		gadgetdiv.setAttribute('id', 'gadget-' + curId);
-		var gadgetHeaderdiv = document.createElement('div');
-		gadgetHeaderdiv.setAttribute('id', 'gadget-body-' + curId);
-		var gadgetBoadydiv = document.createElement('div');
-		gadgetBoadydiv.setAttribute('id', 'gadget-header-' + curId);
-		var elem = document.getElementById("gadgets");
-		elem.appendChild(gadgetdiv);
-		gadgetdiv.appendChild(gadgetBoadydiv);
-		gadgetdiv.appendChild(gadgetHeaderdiv);
-
-	};
+	
 	//  Load the select collection of gadgets and render them the gadget test area
 	$('#addGadgets').click(function() {
 		var testGadgets = $('#gadgetCollection').val().split(',');
@@ -153,13 +119,7 @@ $(function() {
 				}
 				out += "</select><br>";
 
-				/*out += "x.displayName<select>";
-				 <option value="volvo">Volvo</option>
-				 <option value="saab">Saab</option>
-				 <option value="mercedes">Mercedes</option>
-				 <option value="audi">Audi</option>
-				 </select>
-				 */
+				
 			}
 		}
 		out += '</form></div>'
