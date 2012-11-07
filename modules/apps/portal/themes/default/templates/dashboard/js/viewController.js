@@ -3,24 +3,19 @@ $(function() {
 		url : 'http://10.100.3.27:9763/portal/apis/dashboard/listgadget/listgadget.jag?action=listgadgets&dashboardname=default&gadgetarea=main&username=admin',
 		dataType : 'json',
 		success : function(data) {
-			console.log("JAXXXXX" + data.gadgeturls[0]);
 			$.each(data.gadgeturls, function() {
 				console.log(this.toString());
 				window.buildGadgetTemplet();
 				window.buildGadget(this.toString(), curId);
 				curId++;
 			});
-		},
-		error : function(data) {
-
-			console.log("error");
 		}
 	});
 	var curId = 0;
 
 	//create a gadget with navigation tool bar header enabling gadget collapse, expand, remove, navigate to view actions.
 	window.buildGadget = function(gadgetURL, id) {
-		var elem = document.getElementById('gadget-content-'+ id);
+		var elem = document.getElementById('gadget-content-' + id);
 		var gadget = gadgetURL;
 		var container = new osapi.container.Container();
 		var site = container.newGadgetSite(elem);
@@ -29,19 +24,16 @@ $(function() {
 		};
 
 		container.preloadGadget(gadget, function(result) {
-			var xx = '<li class="widget img-rounded span4" data-row="1" data-col="1" data-sizex="1" data-sizey="1">' + '<div style="height: 100%">' + '<div class="widget-header">' + '<h2>' + result[gadget]['modulePrefs'].title + '</h2>' + '<a class="show-options"><img src="../themes/default/img/icon-widget-three-dots.png"></a>' + '<ul class="widget-controls">' + '<li>' + '<a href="#"><i class="icon-cog"></i></a>' + '</li>' + '<li>' + '<a href="#"><i class="icon-minus"></i></a>' + '</li>' + '<li>' + '<a href="#"><i class="icon-resize-full"></i></a>' + '</li>' + '<li>' + '<a href="#"><i class="icon-remove"></i></a>' + '</li>' + '</ul>' + '</div>' + '<div class="widget-content" id="widget-content-'+curId+'">' + '</div>' + '</div>' + '</li>';
+			var templet = '<li class="widget img-rounded span4" data-row="1" data-col="1" data-sizex="1" data-sizey="1">' + '<div style="height: 100%">' + '<div class="widget-header" id="widget-header-' + curId + '">' + '<h2>' + result[gadget]['modulePrefs'].title + '</h2>' + '<a class="show-options"><img src="../themes/default/img/icon-widget-three-dots.png"></a>' + '<ul class="widget-controls">' + '<li>' + '<a href="#"><i class="icon-cog"></i></a>' + '</li>' + '<li>' + '<a href="#"><i class="icon-minus"></i></a>' + '</li>' + '<li>' + '<a href="#"><i class="icon-resize-full"></i></a>' + '</li>' + '<li>' + '<a href="#"><i class="icon-remove"></i></a>' + '</li>' + '</ul>' + '</div>' + '<div class="widget-content" id="widget-content-' + curId + '">' + '</div>' + '</div>' + '</li>';
+			$('#gadget-' + id).append(templet);
+			//var elemx = document.getElementById('gadget-content-'+ id);
+			//$('#widget-header-' + id).append(elemx);
 			if(!result[gadget].error) {
 				container.navigateGadget(site, gadget, {}, renderParams);
 				$('#gadget-header-' + id).append('<h5>' + result[gadget]['modulePrefs'].title + '</h5>');
-				var templatex = $('#myTemplate').html();
-				//	document.getElementById('gadget-header-'+id).innerHTML=;
-			//	$('#gridsterrow').append(xx);
-				$('#gadget-' + id).append(xx);
-				
-				console.log("xxxxxxxxxxxxxxxxxxxxx" + xx);
 				var obj = result[gadget]['userPrefs'];
 				var gadgetForm = Object.gadgetForm(obj, curId);
-				console.log(gadgetForm);
+				//console.log(gadgetForm);
 				if(gadgetForm != '<div id="formdiv-gadget-site-1"><form id="gadget-form-1"></form></div> ') {
 					$('#gadget-header-' + id).append('<br>' + gadgetForm);
 				}
@@ -62,16 +54,7 @@ $(function() {
 		gadgetdiv.appendChild(gadgetHeaderdiv);
 
 	};
-	
-	//  Load the select collection of gadgets and render them the gadget test area
-	$('#addGadgets').click(function() {
-		var testGadgets = $('#gadgetCollection').val().split(',');
-		for(var i = 0; i < testGadgets.length; i++) {
-			window.buildGadgetTemplet();
-			window.buildGadget(testGadgets[i], curId);
-		}
-		curId++;
-	});
+
 	// preloadAndAddGadget
 	$('#preloadAndAddGadget').click(function() {
 		console.log($('#gadgetUrl').val());
@@ -88,12 +71,14 @@ $(function() {
 		for(key in obj) {
 			if(obj.hasOwnProperty(key))
 				size++;
-			console.log(size + key);
+			//console.log(size + key);
 			var x = obj[key];
-			console.log(x);
-			console.log(x.dataType);
-			console.log(x.defaultValue);
-			console.log(x.displayName);
+			/*
+			 console.log(x);
+			 console.log(x.dataType);
+			 console.log(x.defaultValue);
+			 console.log(x.displayName);*/
+
 			if(x.dataType == "STRING") {
 				out += x.displayName + ": <input type=\"text\" name=\"" + x.displayName + "\" value=\"" + x.defaultValue + "\"><br>";
 			} else if(x.dataType == "BOOL") {
@@ -103,13 +88,13 @@ $(function() {
 				}
 				out += "<input type=\"checkbox\" name=\"" + x.displayName + "\" value=\"" + x.defaultValue + "\" checked=\"" + chk + "\">" + x.displayName + "<br>"
 			} else if(x.dataType == "ENUM") {
-				console.log(x.orderedEnumValues.length)
+				//console.log(x.orderedEnumValues.length)
 				out += x.displayName + "<select>";
 				for(var i = 0; i < x.orderedEnumValues.length; i++) {
-					console.log(x.orderedEnumValues[i]);
+				//	console.log(x.orderedEnumValues[i]);
 					out += "<option value=\"" + x.orderedEnumValues[i].value + "\""
-					console.log(x.orderedEnumValues[i].value + " : " + x.defaultValue);
-					console.log(x.orderedEnumValues[i].value == x.defaultValue);
+				//	console.log(x.orderedEnumValues[i].value + " : " + x.defaultValue);
+				//	console.log(x.orderedEnumValues[i].value == x.defaultValue);
 					if(x.orderedEnumValues[i].value == x.defaultValue) {
 						out += "selected=\"true\" >";
 					} else {
@@ -119,11 +104,10 @@ $(function() {
 				}
 				out += "</select><br>";
 
-				
 			}
 		}
 		out += '</form></div>'
-		console.log(out);
+	//	console.log(out);
 		return out;
 	};
 });
